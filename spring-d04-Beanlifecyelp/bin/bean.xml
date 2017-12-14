@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+	搭建开发环境
+	1、创建lib目录拷贝Ioc的基本jar
+	2、在src目录下创建spring的配置文件(任意名称的xml文件)
+	3、导入约束：
+		位置：
+			E:\frame\框架\Spring\文档\源码\Spring的官方发行包\spring-framework-4.2.4.RELEASE-dist\spring-framework-4.2.4.RELEASE\docs\spring-framework-reference\html\xsd-configuration.html
+		或者：
+			E:\frame\框架\Spring\文档\源码\schema\xsd-configuration.html
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+				        http://www.springframework.org/schema/beans/spring-beans.xsd">
+				        
+	<!-- Bean的生命周期 
+		 bean默认情况下是单例的，但是没有执行销毁方法。
+		 bean：出生 活着  死亡
+		  出生：在使用立即加载方式，spring容器一创建，bean对象就已经都创建好了。实例化bean和初始化bean就都执行了。
+		  活着：spring容器还在，bean对象就一直在。
+		  死亡：spring容器如果没了，bean对象也就消亡了。
+	-->
+	<bean id="userbean" class="frame.study.bean.UserBean" init-method="init" destroy-method="destroy"></bean>
+
+</beans>

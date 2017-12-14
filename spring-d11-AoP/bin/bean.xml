@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+	搭建AoP的开发环境
+		1、导入jar包
+			导入AoP的四个基本jar包
+			注意：
+				Aop的运行是依赖与IoC的，所以还需要导入6个IoC的jar
+		2、准备一个通知和连接点
+			创建一个工具类(例如日志的通知)
+			创建service接口和实现类
+		3、创建spring的核心配置文件
+			在src目录下创建一个bean.xml的核心配置文件
+		4、在配置文件中导入名称空间
+			ioc的名称空间和aop的名称空间
+		5、把对象的创建交给spring容器
+			把serviceImpl和utils交给spring容器来创建
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    	xmlns:aop="http://www.springframework.org/schema/aop"
+    	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    						http://www.springframework.org/schema/beans/spring-beans.xsd
+    						http://www.springframework.org/schema/aop 
+    						http://www.springframework.org/schema/aop/spring-aop.xsd">
+	<!-- 将service层的创建交给spring管理 -->
+	<bean id="userService" class="frame.study.service.impl.UserServiceImpl"></bean>
+	
+	<!-- 将通知(工具类)交给spring管理 -->
+	<bean id="logger" class="frame.study.utils.Logger"></bean>
+	
+	<!-- AoP的配置 -->
+	<aop:config>
+		
+		<!-- 配置所有切面通用的切入点表达式 -->
+		<aop:pointcut expression="execution(* cn.itcast.service.impl.*.*(..))" id="pt1"/>
+		
+		<!-- 配置切面：切面就是关心的某一个方面 
+			id：指定的是通知的唯一标识
+			ref：指定的通知的bean的id
+		-->
+		<aop:aspect id="loggerAdvice" ref="logger">
+			<!-- 抽取当前切面的通用切入点表达式 
+					expression属性：指定的就是切入点表达式
+					id属性：是把切入点表达式赋予唯一标识
+				<aop:pointcut expression="execution(* cn.itcast.service.impl.*.*(..))" id="pt1"/>
+			-->
+			<!-- 
+				配置通知的类型：指的就是在业务核心方法的什么时候执行 
+				aop:before：指定的是前置通知
+			
+				method属性：指的是通知里面的哪个方法执行
+				pointcut属性：指定的是切入点表达式。表明从哪里切入业务主线。
+							把哪些连接点变成切入点。
+				切入点表达式：
+					关键字：execution(表达式)
+					表达式语法：
+						访问修饰符  返回值  包名.类名.方法名(参数列表)
+					全匹配方式：
+						execution(public void frame.study.service.impl.UserServiceImpl.saveUser())
+					访问修饰符可以不写：
+						execution(void frame.study.service.impl.UserServiceImpl.saveUser())
+					返回值可以使用通配符：通配符*
+						execution(* frame.study.service.impl.UserServiceImpl.saveUser())
+					包名可以使用通配符：当使用通配符时，有几级包，写几个*
+						execution(* *.*.*.*.UserServiceImpl.saveUser())
+					包名称可以使用..，表明的是当前包及其子包
+						execution(* frame..UserServiceImpl.saveUser())
+					类名可以使用通配符：
+						execution(* frame..*.saveUser())
+					方法名可以使用通配符：
+						execution(* frame..*.*())
+					参数列表可以指定类型：注意的是，如果是基本类型直接写类型名称，如果是引用类型，需要些包名.类名。lang也必须写。例如：java.lang.String
+						execution(* *..*.*(int))
+					参数列表可以使用通配符：注意:不能表示有无参数均可。只能表示参数的数据类型是任意的
+						execution(* *..*.*(*))
+					有无参数均可，可以使用..来表示：
+						execution(* *..*.*(..))
+					最简版：
+						execution(* *..*.*(..))
+					建议的写法：
+						切到业务层具体实现类即可：
+							execution(* frame.study.service.impl.*.*(..))
+							
+					pointcut-ref：指定的是通用切入点表达式的唯一标识
+			-->
+			<aop:before method="printLog" pointcut="execution(* frame.study.service.impl.*.*(..))"/>
+		</aop:aspect>
+	</aop:config>
+</beans>

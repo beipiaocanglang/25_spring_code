@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+					        http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- 将dao的创建交给spring管理 -->
+	<!-- 只能使用基于xml的 -->
+	<bean id="accountDao" class="frame.study.dao.impl.UserDaoImpl">
+		<property name="dataSource" ref="driverManagerDataSource"></property>
+	</bean>
+	
+	<!-- 将service交给spring管理 -->
+	<bean id="accountService" class="frame.study.service.impl.AccountServiceImpl">
+		<property name="accountDao" ref="accountDao"></property>
+		<property name="transactionTemplate" ref="transactionTemplate"></property>
+	</bean>
+	
+	<!-- 事物的模版类交给spring来管理 -->
+	<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager"></property>
+	</bean>
+	
+	<!-- 配置事物管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="driverManagerDataSource"></property>
+	</bean>
+	
+	<!-- 配置数据源 -->
+	<bean id="driverManagerDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql:///sping-d10-transfer"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+</beans>

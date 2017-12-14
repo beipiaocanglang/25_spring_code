@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+	搭建开发环境
+	1、创建lib目录拷贝Ioc的基本jar
+	2、在src目录下创建spring的配置文件(任意名称的xml文件)
+	3、导入约束：
+		位置：
+			E:\frame\框架\Spring\文档\源码\Spring的官方发行包\spring-framework-4.2.4.RELEASE-dist\spring-framework-4.2.4.RELEASE\docs\spring-framework-reference\html\xsd-configuration.html
+		或者：
+			E:\frame\框架\Spring\文档\源码\schema\xsd-configuration.html
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+				        http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- Bean的作用范围
+		scope属性：
+			取值：
+				singleton：单例（默认值）
+				prototype：多例
+				request：请求范围
+				session：会话范围
+				global-session：集群的会话范围。
+	-->			        
+	<bean id="userbean" class="frame.study.bean.UserBean" scope="prototype"></bean>
+</beans>

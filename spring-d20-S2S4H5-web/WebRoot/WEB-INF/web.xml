@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<display-name></display-name>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- 配置监听器： 
+			作用：
+				 用于创建spring容器并且把容器和servletContext绑定 
+			详解：
+				 由于spring中的bean大多数是单例的，所以我们应该保证一个应用只有一个spring容器，不应该重复的创建和销毁 
+				<listener> 
+					<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class> 
+				</listener> 
+				该监听器实现了ServletContextListener接口 创建时间：SerlvetContext创建时创建 销毁时间：SerlvetContext销毁时销毁 
+			注意： 
+				此监听器默认加载的是WEB-INF路径下是一个名字叫applicationContext.xml的spring配置文件 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- 配置struts2的核心过滤器 -->
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>AccountServlt</servlet-name>
+		<servlet-class>frame.study.web.AccountServlt</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AccountServlt</servlet-name>
+		<url-pattern>/servlet/AccountServlt</url-pattern>
+	</servlet-mapping>
+
+</web-app>

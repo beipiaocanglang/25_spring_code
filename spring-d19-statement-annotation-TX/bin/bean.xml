@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+	1、导jar包
+		IoC的jar
+		AOP的jar
+		tx的jar
+		数据源驱动
+	2、导入名称空间
+		IoC
+		AOP
+		tx
+		tontext
+	3、配置spring要扫描的包
+		<context:component-scan base-package="frame.study"></context:component-scan>
+		
+	4、定义事物管理器
+	
+	5、开启spring对注解的支持
+		<tx:annotation-driven transaction-manager="transactionManager"/>
+		注意：
+			transaction-manager="transactionManager"是默认值，可以不写
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xmlns:aop="http://www.springframework.org/schema/aop"
+	    xmlns:tx="http://www.springframework.org/schema/tx"
+	    xmlns:context="http://www.springframework.org/schema/context"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+					        http://www.springframework.org/schema/beans/spring-beans.xsd
+					        http://www.springframework.org/schema/aop 
+    						http://www.springframework.org/schema/aop/spring-aop.xsd
+    						http://www.springframework.org/schema/tx 
+    						http://www.springframework.org/schema/tx/spring-tx.xsd
+    						http://www.springframework.org/schema/context 
+       					    http://www.springframework.org/schema/context/spring-context.xsd">
+	<!-- 扫描controllerbao -->
+	<context:component-scan base-package="frame.study"></context:component-scan>
+	
+	<!-- 
+		把JdbcTemplate交给spring管理 
+		在dao层注入JDBCTemplate时使用
+			@Resource
+			private JdbcTemplate jdbcTemplate;
+	-->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="driverManagerDataSource"></property>
+	</bean>
+	
+	<!-- 开启事物支持的注解驱动 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!-- 配置事物管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="driverManagerDataSource"></property>
+	</bean>
+	
+	<!-- 配置数据源 -->
+	<bean id="driverManagerDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql:///sping-d10-transfer"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+</beans>

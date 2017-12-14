@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+	1、导jar包
+		IoC的jar
+		AOP的jar
+		tx的jar
+		数据源驱动
+	2、导入名称空间
+		IoC
+		AOP
+		tx
+	3、定义事物管理器
+	
+	4、配置通知，引用事物管理器
+	
+	5、指定通知切入哪些方法，配置通知和切入点表达式的关系（这些都属于aop的配置）
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xmlns:aop="http://www.springframework.org/schema/aop"
+	    xmlns:tx="http://www.springframework.org/schema/tx"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+					        http://www.springframework.org/schema/beans/spring-beans.xsd
+					        http://www.springframework.org/schema/aop 
+    						http://www.springframework.org/schema/aop/spring-aop.xsd
+    						http://www.springframework.org/schema/tx 
+    						http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 将dao的创建交给spring管理 -->
+	<!-- 只能使用基于xml的 -->
+	<bean id="accountDao" class="frame.study.dao.impl.UserDaoImpl">
+		<property name="dataSource" ref="driverManagerDataSource"></property>
+	</bean>
+	
+	<!-- 将service交给spring管理 -->
+	<bean id="accountService" class="frame.study.service.impl.AccountServiceImpl">
+		<property name="accountDao" ref="accountDao"></property>
+	</bean>
+	
+	<!-- 
+		3、配置切面 
+			指定通知切入哪些方法，配置通知和切入点表达式的关系（这些都属于aop的配置）
+	-->
+	<aop:config>
+		<!-- 配置通知器（引用2中的id） -->
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* frame.study.service.impl.*.*(..))"/>
+	</aop:config>
+	
+	<!-- 2、事物控制AOP的控制 -->
+	<!-- 
+		此处的transaction-manager属性的取值要和事物管理器的id一致
+		此处的id要和通知器中的advice-ref取值一致
+		配置通知，通知中要引用事物管理器，因为事物管理器中有公共代码(提交和回滚)
+		不需要配置前置通知或者后置通知，因为成功才能提交，失败就要回滚，没有其他选择
+	-->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<!-- 配置事物的定义属性：比如查找，只需要只读事物 -->
+		<tx:attributes>
+			<!--  
+				指定需呀事物的方法
+				常用属性：
+					isolation="DEFAULT" :指定事物隔离级别，默认DEFAULT
+					propagation="REQUIRED" ：指定事物的创博行为，默认REQUIRED
+					read-only="false" ：是否是只读事物，默认flase
+					timeout="-1"：指定事物的超时时间，默认-1（永不超时）
+					no-rollback-for="" ：当产生指定异常时，不回滚，其他异常回滚，没有默认值
+					rollback-for="" ：当产生指定异常时回滚，其他异常不回滚，没有默认值
+			-->
+			<!-- <tx:method name="delete*"/>		
+			<tx:method name="save*"/> -->	
+			<!-- read-only="false" propagation="REQUIRED"默认值可以不写 -->	
+			<tx:method name="*" />		
+			<tx:method name="find*" read-only="true" propagation="SUPPORTS"/><!-- 将查询时的事物设置成只读 -->		
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 1、配置事物管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="driverManagerDataSource"></property>
+	</bean>
+	
+	<!-- 配置数据源 -->
+	<bean id="driverManagerDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql:///sping-d10-transfer"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+</beans>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<!-- 实体类和数据库名称映射 -->
+	<class name="frame.study.domain.Account" table="ACCOUNT">
+		<!-- 主键Id -->
+		<id name="id" column="ID">
+			<!-- 增长策略：自增长 -->
+			<generator class="native"></generator>
+		</id>
+		<!-- 其他字段的映射 -->
+		<property name="name" column="NAME" ></property>
+		<property name="money" column="MONEY"></property>
+	</class>
+</hibernate-mapping>

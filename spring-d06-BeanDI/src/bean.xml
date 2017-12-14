@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+	搭建开发环境
+	1、创建lib目录拷贝Ioc的基本jar
+	2、在src目录下创建spring的配置文件(任意名称的xml文件)
+	3、导入约束：
+		位置：
+			E:\frame\框架\Spring\文档\源码\Spring的官方发行包\spring-framework-4.2.4.RELEASE-dist\spring-framework-4.2.4.RELEASE\docs\spring-framework-reference\html\xsd-configuration.html
+		或者：
+			E:\frame\框架\Spring\文档\源码\schema\xsd-configuration.html
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+					        http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- Bean的参数注入-->
+	<!-- 
+		第一种方式：是通过构造函数注入 
+		
+		使用construtor-arg
+		
+		常用属性：
+			index：指定的是参数出现在构造函数中的索引
+			type：指定参数在构造函数中的数据类型
+			name：指定参数在构造函数中的名称		*****
+			以上三个都是在指定：给谁注入
+			
+			value：注入基本数据类型或者String类型的值
+			ref：注入的是其他bean类型的值
+			以上两个都是在指定：注入的值
+	
+		 当在定义bean时，使用了constructor-arg元素，则在bean元素中有几个constructor-arg，就需要提供对应参数列表的构造函数
+	-->	        
+	<bean id="userbean" class="frame.study.bean.UserBean">
+		<constructor-arg name="name" value="test"></constructor-arg>
+		<constructor-arg name="age" value="10"></constructor-arg>
+		<constructor-arg name="birthday" ref="now"></constructor-arg>
+	</bean>
+	<!-- 
+		第二种方式：是通过属性的set方法注入 
+		需要使用的元素是：property
+		属性：
+			name：写的是set方法后面的部分，并且首字母转小写。
+			ref：注入的其他Bean类型的值
+			value：注入的是基本类型或者String类型的值
+	-->		
+	<bean id="userbean1" class="frame.study.bean.UserBean1">
+		<property name="name" value="aaa"></property>
+		<property name="age" value="19"></property>
+		<property name="birthday" ref="now"></property>
+	</bean>
+	<!-- 
+		派生方式一
+		使用Spring中EL表达式。SpringEL 目前定位：了解 
+		#{now}就是SPring的EL表达式
+	-->	
+	<bean id="userbean2" class="frame.study.bean.UserBean2">
+		<property name="name" value="aa2a"></property>
+		<property name="age" value="19"></property>
+		<property name="birthday" value="#{now}"></property>
+	</bean>
+	<!-- 
+		派生 方式二：使用p名称空间注入 
+		1、导入P名称空间：xmlns:p="http://www.springframework.org/schema/p"
+		2、在bean元素中使用p名称空间
+			p:属性名称="属性值"
+			属性名称指的是set方法后面的部分。
+			每个属性都有两个赋值方式：
+				p:属性名称="属性值"
+				p:属性名称-ref="其他bean类型"
+	-->
+	<bean id="userbean3" class="frame.study.bean.UserBean3" p:name="vvvv" p:age="66" p:birthday-ref="now"></bean>
+	
+	<bean id="now" class="java.util.Date"></bean>
+	
+	<!--
+		 注入集合数据 
+		
+		如果是对象集合数据，list结构的可以使用如下三个元素：
+			array
+			list
+			set
+		如果是map结构的，可以使用如下四个元素
+			map:
+				map的子元素是entry
+				有两种方式：
+					1、可以使用entry的子标签value标签来赋值
+					2、可以在entry标签上使用value属性来赋值
+			props
+				props的子元素是prop
+		只要结构相同，元素可以互换。
+	-->
+	<bean id="myArray" class="frame.study.bean.UserBean4">
+		<!-- Array数组注入数据  -->
+		<property name="myArray">
+			<array>
+				<value>111</value>
+				<value>222</value>
+				<value>333</value>
+				<value>444</value>
+			</array>
+		</property>
+		<!-- list集合注入数据  -->
+		<property name="muList">
+			<list>
+				<value>111</value>
+				<value>222</value>
+				<value>333</value>
+				<value>444</value>
+			</list>
+		</property>
+		<!-- set集合注入数据  -->
+		<property name="mySet">
+			<set>
+				<value>111</value>
+				<value>222</value>
+				<value>333</value>
+				<value>444</value>
+			</set>
+		</property>
+		<!-- map集合注入数据 -->
+		<property name="myMap">
+			<map>
+				<entry key="aaa">
+					<value>111</value>
+				</entry>
+				<entry key="bbb" value="222"></entry>
+				<entry key="ccc" value="333"></entry>
+			</map>
+		</property>
+		<!-- Properties集合注入数据 -->
+		<property name="myProps">
+			<props>
+				<prop key="ddd">444</prop>
+				<prop key="eee">555</prop>
+				<prop key="fff">666</prop>
+			</props>
+		</property>
+	</bean>
+	
+	
+</beans>

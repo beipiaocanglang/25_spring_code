@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+	导入约束
+-->
+<!DOCTYPE struts PUBLIC
+		"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+		"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 开启开发者模式 -->
+	<constant name="struts.devMode" value="true"></constant>
+	
+	<!-- 设置拦截后缀 -->
+	<constant name="struts.action.extension" value="action"></constant>
+	
+	<package name="action" extends="struts-default" namespace="/account">
+		<!--  
+			name:取值必须和页面的请求一致，在访问时需要加上namespace的取值
+			class：动作类的全类路径名
+			method：动作类中要执行的动作方法
+			<action name="findActionById" class="frame.study.web.action.AccountAction" method="findActionById">
+		-->
+		<!--  
+			将struts2对象的创建交给spring容器创建后
+			struts2框架创建Action时，会先用class属性反射创建，
+			如果失败，会那class属性的值当作key，去spring容器中查找
+		-->
+		<action name="findActionById" class="accountAction" method="findActionById">
+			<!-- name：取值必须和动作方法的返回值一致 -->
+			<result name="success">/success.jsp</result>
+		</action>
+	</package>
+</struts>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

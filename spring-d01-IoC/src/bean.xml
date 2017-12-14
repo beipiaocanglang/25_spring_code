@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+	搭建开发环境
+	1、创建lib目录拷贝Ioc的基本jar
+	2、在src目录下创建spring的配置文件(任意名称的xml文件)
+	3、导入约束：
+		位置：
+			E:\frame\框架\Spring\文档\源码\Spring的官方发行包\spring-framework-4.2.4.RELEASE-dist\spring-framework-4.2.4.RELEASE\docs\spring-framework-reference\html\xsd-configuration.html
+		或者：
+			E:\frame\框架\Spring\文档\源码\schema\xsd-configuration.html
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+				        http://www.springframework.org/schema/beans/spring-beans.xsd">
+				        
+	<!-- 
+		把持久层和业务层的创建都交给spring来管理 
+		
+		bean元素用于配置程序中可重用的组件。包括持久层，业务层以及表现层动作类
+			属性：
+				id:指定的是spring容器中的key
+				class:指定的就是类的全名称
+				
+			spring容器在创建时，会读取配置文件，创建一个容器（map），把id作为key，把class属性创建的对象作为value，存入容器中
+		
+		bean的实例化
+			在加载配置文件时，会反射创建类对象。调用的默认无参的构造函数，如果没有无参构造就不能够创建对象
+	-->
+	<bean id="userDao" class="frame.study.dao.impl.UserDaoImpl"></bean>
+	<bean id="userService" class="frame.study.service.impl.UserServiceImpl"></bean>
+</beans>

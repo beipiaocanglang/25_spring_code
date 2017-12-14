@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+	搭建AoP的开发环境
+		1、导入jar包
+			导入AoP的四个基本jar包
+			注意：
+				Aop的运行是依赖与IoC的，所以还需要导入6个IoC的jar
+		2、创建spring的核心配置文件
+			在src目录下创建一个bean.xml的核心配置文件
+		3、在配置文件中导入名称空间
+			ioc的名称空间、aop的名称空间、context的名称空间
+		4、配置spring创建容器时要扫描的包
+		5、开启spring基于注解AOP的支持
+		6、使用AOP的注解开发
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    	xmlns:aop="http://www.springframework.org/schema/aop"
+    	xmlns:context="http://www.springframework.org/schema/context"
+    	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    						http://www.springframework.org/schema/beans/spring-beans.xsd
+    						http://www.springframework.org/schema/aop 
+    						http://www.springframework.org/schema/aop/spring-aop.xsd
+			 				http://www.springframework.org/schema/context 
+			 				http://www.springframework.org/schema/context/spring-context.xsd">
+	<!-- 配置要扫描的包 -->
+   <context:component-scan base-package="frame.study"></context:component-scan>
+   <!-- 开启基于注解AOP的支持 -->
+   <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	
+</beans>

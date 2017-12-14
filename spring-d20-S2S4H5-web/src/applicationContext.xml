@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xmlns:aop="http://www.springframework.org/schema/aop"
+	    xmlns:tx="http://www.springframework.org/schema/tx"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+					        http://www.springframework.org/schema/beans/spring-beans.xsd
+					        http://www.springframework.org/schema/aop 
+    						http://www.springframework.org/schema/aop/spring-aop.xsd
+    						http://www.springframework.org/schema/tx 
+    						http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 将dao的创建交给spring管理 -->
+	<!-- 只能使用基于xml的
+		这是JDBCtemplat的配置
+	<bean id="accountDao" class="frame.study.dao.impl.UserDaoImpl">
+		<property name="dataSource" ref="driverManagerDataSource"></property>
+	</bean>
+	-->
+	
+	<!-- 
+		使用hibernate的配置
+		原始的hibernate提供的SessionFactory：弊端：事物的控制在持久层 
+	-->
+	<!-- <bean id="accountDao" class="frame.study.dao.impl.UserDaoImpl1">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean> -->
+	
+	<!-- 使用hibernate自己提供的事物模版 -->
+	<bean id="accountDao" class="frame.study.dao.impl.UserDaoImpl2">
+		<property name="hibernateTemplate" ref="hibernateTemplate"></property>
+	</bean>
+	
+	<!-- 将service交给spring管理 -->
+	<bean id="accountService" class="frame.study.service.impl.AccountServiceImpl">
+		<property name="accountDao" ref="accountDao"></property>
+	</bean>
+	
+	<!-- 
+		将struts2的动作类交给spring创建
+		注意：
+			struts2动作类是多例的，所以需要使用 scope="prototype"
+	-->
+	<bean name="accountAction" class="frame.study.web.action.AccountAction" scope="prototype">
+		<!-- 此处name取值是struts2动作类中(private IAccountService accountService)值 -->
+		<property name="accountService" ref="accountService"></property>
+	</bean>
+	
+	<!-- 配置一个hibernate的操作模版 -->
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<!-- 该hibernate操作模版注入sessionFactory -->
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- 配置一个SessionFactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<!-- 使用hibernate的配置文件来创建工厂 -->
+		<property name="configLocation" value="classpath:hibernate.cfg.xml"></property>
+	</bean>
+	
+	
+	<!-- 3、配置切面 ,指定通知切入哪些方法，配置通知和切入点表达式的关系（这些都属于aop的配置）-->
+	<aop:config>
+		<!-- 配置通知器（引用2中的id） -->
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* frame.study.service.impl.*.*(..))"/>
+	</aop:config>
+	
+	<!-- 2、事物控制AOP的控制 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<!-- 配置事物的定义属性：比如查找，只需要只读事物 -->
+		<tx:attributes>
+			<tx:method name="*" />		
+			<tx:method name="find*" read-only="true" propagation="SUPPORTS"/><!-- 将查询时的事物设置成只读 -->		
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 1、配置事物管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- 配置数据源 -->
+	<!-- <bean id="driverManagerDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql:///sping-d10-transfer"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean> -->
+	
+</beans>
